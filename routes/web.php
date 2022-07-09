@@ -15,7 +15,10 @@ use App\Http\Controllers\ElementsController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('admin.login');
 });
 
 Route::get('test', [ElementsController::class, 'test']);
+Route::get('/admin/home', [ElementsController::class, 'home']);
+
+Route::post('/admin-login' , [ElementsController::class, 'loginAdmin']);
