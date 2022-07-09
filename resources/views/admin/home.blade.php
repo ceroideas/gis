@@ -61,7 +61,7 @@
 						    shadowAnchor: [22, 94],
 						});
 
-						L.marker([{{ $ele->latitud }}, {{ $ele->longitud }}], {icon: myIcon}).bindPopup('<span><b>{{ $ele->nombre }}</b></span><br><span>Latitud: {{ $ele->latitud }}</span><br><span>Longitud: {{ $ele->longitud }}</span>').on('click', markerOnClick).addTo(map);
+						L.marker([{{ $ele->latitud }}, {{ $ele->longitud }}], {icon: myIcon}).bindPopup('<span>Tipo: {{ $ele->tipo == 1 ? 'Arqueta' : ($ele->tipo == 0 ? 'Poste' : 'Aramrio') }}</span><br><span><b>{{ $ele->nombre }}</b></span><br><span>Latitud: {{ $ele->latitud }}</span><br><span>Longitud: {{ $ele->longitud }}</span>').on('click', markerOnClick).addTo(map);
 
 
 				@endforeach
