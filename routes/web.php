@@ -21,4 +21,11 @@ Route::get('/', function () {
 Route::get('test', [ElementsController::class, 'test']);
 Route::get('/admin/home', [ElementsController::class, 'home']);
 
+<<<<<<< HEAD
 Route::post('/admin-login' , [ElementsController::class, 'loginAdmin']);
+=======
+Route::post('/admin-login' , [ElementsController::class, 'loginAdmin']);
+
+
+Route::post('/uploadOverlay' , [ElementsController::class, 'uploadOverlay']);
+>>>>>>> f1873ed7912e52e1a6094f424c0c676af5817024
