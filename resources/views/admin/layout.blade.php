@@ -76,21 +76,25 @@
               <!-- sidebar menu start-->
               	<ul class="sidebar-menu" id="nav-accordion">
                   	<li>
-                      	<a class="active" href="index.html">
+                      	<a class="" href="javascript:;">
                           	<i class="fa fa-dashboard"></i>
-                          	<span>Dashboard</span>
+                          	<span>Redes disponibles</span>
                       	</a>
                   	</li>
-
-                  	<li class="sub-menu">
-                      	<a href="javascript:;" >
-                          	<i class="fa fa-laptop"></i>
-                          	<span>Prueba proyecto</span>
-                      	</a>
-                      	<ul class="sub">
-                          <li><a  href="#">Prueba funcionalidad</a></li>
-                      	</ul>
-                  	</li>
+                    @php
+                        $redes = DB::table('redes')->get();
+                    @endphp
+                    @foreach($redes as $i => $red)
+                      	<li class="sub-menu">
+                          	<a href="javascript:;" class="item_load {{ $i === 0 ? 'active' : '' }}" data-id="{{ $red->id }}">
+                              	<i class="fa fa-laptop"></i>
+                              	<span>{{ $red->nombre }}</span>
+                          	</a>
+                          	{{-- <ul class="sub">
+                              <li><a  href="#">Prueba funcionalidad</a></li>
+                          	</ul> --}}
+                      	</li>
+                    @endforeach
               	</ul>
               <!-- sidebar menu end-->
           	</div>
