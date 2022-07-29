@@ -63,4 +63,15 @@ class ElementsController extends Controller
             'arm' => $arm,
         ]);
     }
+
+    public function saveNewElement(Request $r){
+        $data = [
+            'nombre' => $r->description,
+            'id_red' => $r->active_red,
+            'path'   => $r->paths,
+            'tipo'   => $r->type_element
+        ];
+        $ins = DB::table('elementos_fibra')->insert($data);
+        return $ins;
+    }
 }

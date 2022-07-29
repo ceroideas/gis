@@ -50,7 +50,7 @@
       		<button class="btn btn-xs btn-info" onclick="$('.leaflet-pm-icon-polyline').click();
       		addText('Para crear un cable, seleccione un marcador y haga clic para empiezar a dibujar, luego siga haciendo clic... Para finaliar, haga clic en el ultimo punto creado.')">Crear Cable</button>
       		
-      		<button class="btn btn-xs btn-success" onclick="$('.leaflet-pm-icon-rectangle').click();
+      		<button class="btn btn-xs btn-success" onclick="$('.leaflet-pm-icon-circle-marker').click();
       		addText('Coloque el cursor donde desee crear la caja y luego arrastre para cambiar el tamaño y haga clic para terminar de crear.')">Caja</button>
       		
       		<button class="btn btn-xs btn-warning" onclick="$('.leaflet-pm-icon-polygon').click();
@@ -64,7 +64,6 @@
 
       		<button class="btn btn-xs btn-danger" onclick="$('.leaflet-pm-icon-delete').click();
       		addText('Seleccione un elemento para borrarlo.')">Borrar</button>
-
 
       		</div>
 
@@ -148,6 +147,64 @@
   			</form>
   		</div>
   	</div>
+
+  	<div class="modal fade" id="add_element">
+  		<div class="modal-dialog modal-md">
+  			<form class="modal-content" id="add_element_form" method="POST">
+  				{{csrf_field()}}
+  				<div class="modal-header add_element_header"></div>
+  				<input type="hidden" name="paths">
+  				<input type="hidden" name="active_red">
+  				<input type="hidden" name="type_element">
+  				<input type="hidden" name="lt_element">
+  				<input type="hidden" name="ln_elemen">
+  				<div class="modal-body">
+  					<div class="row">
+  						<div class="col-sm-12">
+  							<div class="form-group">
+		  						<label>Descripcion</label>
+		  						<textarea name="description" id="description" cols="30" rows="3" class="form-control"></textarea>
+		  					</div>
+  						</div>
+  						<div class="col-sm-12">
+  							<div class="form-group">
+		  						<label>Tamaño</label>
+		  						<input type="number" name="size" class="form-control" min="1">
+		  					</div>
+  						</div>
+  					</div>
+  				</div>
+  				<div class="modal-footer">
+  					<button type="button" id="send_new_element" class="btn btn-xs btn-success">Aceptar</button>
+  					<button data-dismiss="modal" type="button" class="btn btn-xs btn-danger">Cancelar</button>
+  				</div>
+  			</form>
+  		</div>
+  	</div>
+
+  	<div class="modal fade" id="edit_element">
+  		<div class="modal-dialog modal-md">
+  			<form class="modal-content" id="edit_element_form" method="POST">
+  				{{csrf_field()}}
+  				<div class="modal-header edit_element_header"></div>
+  				<input type="hidden" name="element_id">
+  				<div class="modal-body">
+  					<div class="row">
+  						<div class="col-sm-12">
+  							<div class="form-group">
+		  						<label>Descripcion</label>
+		  						<textarea name="description" id="description_edit_element" cols="30" rows="3" class="form-control"></textarea>
+		  					</div>
+  						</div>
+  					</div>
+  				</div>
+  				<div class="modal-footer">
+  					<button type="button" id="send_edit_element" class="btn btn-xs btn-success">Aceptar</button>
+  					<button data-dismiss="modal" type="button" class="btn btn-xs btn-danger">Cancelar</button>
+  				</div>
+  			</form>
+  		</div>
+  	</div>
   	@section('scripts')
   		<script>
   			var overlay = null;
@@ -155,8 +212,37 @@
   			var map;
   			var layers = [];
   			function markerOnClick(e){
-			  console.log("Las coordenadas son: " + e.latlng);
-			  console.log(e);
+			  // console.log("Las coordenadas son: " + e.latlng);
+			  // console.log(e);
+			}
+
+			function saveElement(e){
+				console.log(e);
+				var path = [];
+				if(e.shape == 'Line'){
+					$('.add_element_header').text('Nuevo cable');
+					$.each(e.marker._latlngs, function(index, val) {
+						var ltln = [val.lat, val.lng];
+						path.push(ltln);
+					});
+					$('[name="paths"]').val(JSON.stringify(path));
+					$('[name="type_element"]').val('3');
+				}
+				if(e.shape == 'CircleMarker'){
+					$('.add_element_header').text('Nueva caja');
+					$('[name="type_element"]').val('3');
+					$('[name="lt_element"]').val(e.layer._latlng.lt);
+					$('[name="ln_element"]').val(e.layer._latlng.ln);
+				}	
+				$('#add_element').modal('show');
+			}
+
+			function showEditElementModal(s){
+				$('[name="element_id"]').val(s.data('id'));
+				$('#description_edit_element').val(s.data('name'));
+				$('.edit_element_header').text(s.data('text'));
+
+				$('#edit_element').modal('show');
 			}
 
 			function loadDataRed(red){
@@ -189,8 +275,7 @@
 					map.on('pm:create', (e) => {
 					  	e.layer.setStyle({ pmIgnore: false });
 					  	L.PM.reInitLayer(e.layer);
-					  	console.log(e.layer.getLatLngs())
-					  	console.log(e);
+					  	saveElement(e);
 
 					  	let layer = e.layer;
 
@@ -224,7 +309,7 @@
 						if(val.longitud_google){
 							ln = val.longitud_google;
 						}
-						L.marker([lt, ln], {icon: myIcon}).bindPopup('<span><b>Nodo Central</b></span><br><span><b>'+val.nombre+'</b></span><br><span>Latitud:'+lt+'</span><br><span>Longitud:'+ln+'</span>').on('click', markerOnClick).addTo(map);
+						L.marker([lt, ln], {icon: myIcon}).bindPopup('<span><b>Nodo Central</b></span><br><span style="cursor:pointer;color:blue;text-decoration:underline" onclick="showEditElementModal($(this))" data-id="'+val.id+'" data-name="'+val.nombre+'" data-text="Editar nodo"><b>'+val.nombre+'</b></span><br><span>Latitud:'+lt+'</span><br><span>Longitud:'+ln+'</span>').on('click', markerOnClick).addTo(map);
 					});
 
 					$.each(data.box, function(index, val) {
@@ -242,7 +327,7 @@
 						if(val.longitud){
 							ln = val.longitud;
 						}
-						L.marker([lt, ln], {icon: myIcon}).bindPopup('<span><b>Caja</b></span><br><span><b>'+val.nombre+'</b></span><br><span>Latitud:'+lt+'</span><br><span>Longitud:'+ln+'</span>').on('click', markerOnClick).addTo(map);
+						L.marker([lt, ln], {icon: myIcon}).bindPopup('<span><b>Caja</b></span><br><span  style="cursor:pointer;color:blue;text-decoration:underline" onclick="showEditElementModal($(this))" data-id="'+val.id+'" data-name="'+val.nombre+'" data-text="Editar caja"><b>'+val.nombre+'</b></span><br><span>Latitud:'+lt+'</span><br><span>Longitud:'+ln+'</span>').on('click', markerOnClick).addTo(map);
 					});
 
 					$.each(data.spi, function(index, val) {
@@ -278,11 +363,32 @@
 
   			$(document).ready(function() {
 				loadDataRed('{{ $red->id }}');
+				$('[name="active_red"]').val('{{ $red->id }}');
 				$(document).on('click' , '.item_load' , function(){
 					$('.item_load').removeClass('active');
 					$(this).addClass('active');
 					$('#loader_map').show();
+					$('[name="active_red"]').val($(this).data('id'));
 					loadDataRed($(this).data('id'));
+				});
+
+
+				$(document).on('click' , '#send_new_element' , function(){
+					var f =$('#add_element_form');
+					$.ajax({
+						url: '{{ url('/admin/save-new-element') }}',
+						type: 'POST',
+						data: f.serialize(),
+					})
+					.done(function(data) {
+						console.log(data);
+					})
+					.fail(function() {
+						console.log("error");
+					})
+					.always(function() {
+						console.log("complete");
+					});
 				});
 
 				var image;
@@ -368,13 +474,6 @@
 
   				td.show();
   			}
-
-  				/*var imageUrl = '{{url('layer.jpg')}}',
-    			imageBounds = [[37.479972,-3.963486],[37.444759, -3.884579]];
-				overlay = L.imageOverlay(imageUrl, imageBounds , {
-					interactive: true,
-					opacity:0.7
-				}).addTo(map);*/
   		</script>
   		<link rel="stylesheet" href="https://jquery.malsup.com/block/block.css?v3">
   		<script src="https://malsup.github.io/jquery.blockUI.js"></script>
