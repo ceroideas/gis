@@ -2,10 +2,10 @@
 @section('body')
 	<style>
 		#map { height: 480px; }
-		.leaflet-pm-toolbar.leaflet-pm-draw.leaflet-bar.leaflet-control,
+		/*.leaflet-pm-toolbar.leaflet-pm-draw.leaflet-bar.leaflet-control,
 		.leaflet-pm-toolbar.leaflet-pm-edit.leaflet-bar.leaflet-control {
 			display: none;
-		}
+		}*/
 		.blockUI.blockMsg.blockPage
 		{
 			z-index: 10011 !important;
@@ -233,6 +233,7 @@
 					$('[name="type_element"]').val('3');
 					$('[name="lt_element"]').val(e.layer._latlng.lt);
 					$('[name="ln_element"]').val(e.layer._latlng.ln);
+					$('.leaflet-pm-icon-circle-marker').click()
 				}	
 				$('#add_element').modal('show');
 			}
