@@ -10,11 +10,19 @@ use Illuminate\Support\Facades\Schema;
 use App\Exports\DataExport;
 use Maatwebsite\Excel\Facades\Excel;
 
+use Imagick;
+
 class ElementsController extends Controller
 {
     //
     public function test()
     {
+    	$myurl = public_path().'/filename.pdf[0]';
+		$image = new Imagick($myurl);
+		$image->setResolution( 1024, 1024 );
+		$image->setImageFormat( "png" );
+		$image->writeImage(public_path().'/uploads/newfilename.png');
+
         // $capas = DB::table('elementos_fibra')->where('tipo' , 0)->take(20)->get();
         // dd($capas);
         // $tables = [Schema::getColumnListing('redes'),
