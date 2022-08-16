@@ -26,4 +26,9 @@ Route::get('/admin/load-red-data-to-map/{id}', [ElementsController::class, 'load
 Route::post('/admin-login' , [ElementsController::class, 'loginAdmin']);
 Route::post('/uploadOverlay' , [ElementsController::class, 'uploadOverlay']);
 Route::post('/admin/save-new-element' , [ElementsController::class, 'saveNewElement']);
+Route::post('/admin/cable-templates/save' , [ElementsController::class, 'saveCableTemplate']);
+Route::post('/admin/cable-templates/edit/{id}' , [ElementsController::class, 'editCablesTemplate']);
+
+Route::get('/admin/cable-templates' , [ElementsController::class, 'cablesTemplate']);
+Route::get('/admin/cable-templates/delete/{id}' , [ElementsController::class, 'deleteCablesTemplate']);
 

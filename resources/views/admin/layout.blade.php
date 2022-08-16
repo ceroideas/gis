@@ -35,6 +35,13 @@
       <script src="js/html5shiv.js"></script>
       <script src="js/respond.min.js"></script>
     <![endif]-->
+     <style>
+          .card-body-table{
+               background: #fff;
+              padding: 20px;
+              border-radius: 7px;
+          }
+     </style>  
   </head>
 
   <body>
@@ -76,12 +83,18 @@
               <!-- sidebar menu start-->
               	<ul class="sidebar-menu" id="nav-accordion">
                   	<li>
-                      	<a class="" href="javascript:;">
+                      	<a class="" href="{{ url('/admin/home') }}">
                           	<i class="fa fa-dashboard"></i>
-                          	<span>Redes disponibles</span>
+                          	<span>Inicio</span>
                       	</a>
                   	</li>
-                    @php
+                    <li>
+                        <a class="" href="{{ url('/admin/cable-templates') }}">
+                            <i class="fa fa-dashboard"></i>
+                            <span>Plantillas de cable</span>
+                        </a>
+                    </li>
+                   {{--  @php
                         $redes = DB::table('redes')->get();
                     @endphp
                     @foreach($redes as $i => $red)
@@ -90,11 +103,11 @@
                               	<i class="fa fa-laptop"></i>
                               	<span>{{ $red->nombre }}</span>
                           	</a>
-                          	{{-- <ul class="sub">
+                          	<ul class="sub">
                               <li><a  href="#">Prueba funcionalidad</a></li>
-                          	</ul> --}}
+                          	</ul>
                       	</li>
-                    @endforeach
+                    @endforeach --}}
               	</ul>
               <!-- sidebar menu end-->
           	</div>
